@@ -150,8 +150,29 @@ def get_mp3s_from_api(g, attid):
 def parse_page(html: str, url: str):
     soup = BeautifulSoup(html, "html.parser")
     title = text_or_none(soup.find("h1"))
-    desc = text_or_none(soup.find("div", class_="short-description")) or ""
-    detail = text_or_none(soup.find("div", class_="full-description")) or ""
+
+    # Try multiple locations for the short description.  IranSeda has changed
+    # its markup a few times and the description might appear either in a div
+    # with various class names or as a meta tag.
+    desc_el = soup.find(
+        "div",
+        class_=lambda c: c and "short" in c and "description" in c,
+    )
+    desc = text_or_none(desc_el)
+    if not desc:
+        meta = soup.find("meta", attrs={"name": "description"}) or soup.find(
+            "meta", attrs={"property": "og:description"}
+        )
+        if meta and meta.get("content"):
+            desc = meta["content"].strip()
+    if not desc:
+        desc = ""
+
+    detail_el = soup.find(
+        "div",
+        class_=lambda c: c and "full" in c and "description" in c,
+    )
+    detail = text_or_none(detail_el) or ""
     lang = parse_from_metadata_list(soup, "زبان")
     country = parse_from_metadata_list(soup, "کشور")
     author = parse_from_metadata_list(soup, "نویسنده")
