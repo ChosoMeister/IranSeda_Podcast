@@ -78,6 +78,7 @@ def build_item(row, pubdate):
         ("Book_Title", "عنوان کتاب", False),
         ("Book_Description", "توضیحات کتاب", False),
         ("Book_Detail", "جزئیات/متن کامل معرفی", False),
+        ("Book_Summary", "خلاصه کتاب", False),
         ("Book_Language", "زبان کتاب", True),
         ("Book_Country", "کشور (منشأ یا مخاطب)", True),
         ("Book_Author", "نویسنده", True),
