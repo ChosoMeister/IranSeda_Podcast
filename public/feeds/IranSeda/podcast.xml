@@ -4,7 +4,7 @@
     <title>کتاب‌های صوتی من</title>
     <link>https://ChosoMeister.github.io/IranSeda_Podcast</link>
     <language>fa</language>
-    <lastBuildDate>Sat, 23 Aug 2025 15:43:46 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 23 Aug 2025 16:09:49 +0000</lastBuildDate>
     <itunes:author>ناشر نامشخص</itunes:author>
     <itunes:summary>جمع آوری بخشی از کتاب های صوتی موجود در سایت ایران صدا  در جهت استفاده در نرم افزار پادگیر</itunes:summary>
     <description><![CDATA[جمع آوری بخشی از کتاب های صوتی موجود در سایت ایران صدا  در جهت استفاده در نرم افزار پادگیر]]></description>
@@ -12,11 +12,20 @@
     <atom:link href="https://ChosoMeister.github.io/IranSeda_Podcast/feeds/IranSeda/podcast.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>بیست هزار فرسنگ زیر دریا</title>
-      <description><![CDATA[عنوان کتاب: بیست هزار فرسنگ زیر دریا<br/>آدرس تصویر کاور: http://player.iranseda.ir/picture?AttID=521584&s=c]]></description>
+      <description><![CDATA[عنوان کتاب: بیست هزار فرسنگ زیر دریا<br/>توضیحات کتاب: داستان از زبان پروفسور آرونا روایت می‌‏شود؛ دانشمندی فرانسوی كه برای مطالعه، به آمریكا آمده است.<br/>آدرس تصویر کاور: http://player.iranseda.ir/picture?AttID=521584&s=c]]></description>
       <enclosure url="https://player.iranseda.ir/downloadfile/?attid=528988&amp;q=11" length="54201435" type="audio/mpeg"/>
       <guid isPermaLink="false">ae26f89b611ff70512d8c507bb9621b3e51a54ff</guid>
-      <pubDate>Sat, 23 Aug 2025 15:43:46 +0000</pubDate>
+      <pubDate>Sat, 23 Aug 2025 16:09:49 +0000</pubDate>
       <itunes:image href="http://player.iranseda.ir/picture?AttID=521584&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>دیوار چین</title>
+      <description><![CDATA[عنوان کتاب: دیوار چین<br/>توضیحات کتاب: «دیوار چین» با نام اصلی گرفتاری‌های یك مرد چینی در چین رمانی نوشته ژول ورن نمایشنامه‌نویس و رمان‌نویس معروف فرانسوی است كه نخستین بار در سال 1879 توسط انتشارات پیر-ژول اتزل در فرانسه منتشر شد.<br/>آدرس تصویر کاور: http://player.iranseda.ir/picture?AttID=378658&s=c]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=378221&amp;q=11" length="40762981" type="audio/mpeg"/>
+      <guid isPermaLink="false">e7a6e927b62aa57e38c82fdc562a7a557a58371c</guid>
+      <pubDate>Sat, 23 Aug 2025 16:09:49 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=378658&amp;s=c"/>
       <language>fa</language>
     </item>
   </channel>
