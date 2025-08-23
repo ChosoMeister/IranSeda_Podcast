@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>کتاب‌های صوتی من</title>
+    <link>https://ChosoMeister.github.io/IranSeda_Podcast</link>
+    <language>fa</language>
+    <lastBuildDate>Sat, 23 Aug 2025 15:43:46 +0000</lastBuildDate>
+    <itunes:author>ناشر نامشخص</itunes:author>
+    <itunes:summary>جمع آوری بخشی از کتاب های صوتی موجود در سایت ایران صدا  در جهت استفاده در نرم افزار پادگیر</itunes:summary>
+    <description><![CDATA[جمع آوری بخشی از کتاب های صوتی موجود در سایت ایران صدا  در جهت استفاده در نرم افزار پادگیر]]></description>
+    <itunes:image href="http://player.iranseda.ir/picture?AttID=521584&amp;s=c"/>
+    <atom:link href="https://ChosoMeister.github.io/IranSeda_Podcast/feeds/IranSeda/podcast.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>بیست هزار فرسنگ زیر دریا</title>
+      <description><![CDATA[عنوان کتاب: بیست هزار فرسنگ زیر دریا<br/>آدرس تصویر کاور: http://player.iranseda.ir/picture?AttID=521584&s=c]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=528988&amp;q=11" length="54201435" type="audio/mpeg"/>
+      <guid isPermaLink="false">ae26f89b611ff70512d8c507bb9621b3e51a54ff</guid>
+      <pubDate>Sat, 23 Aug 2025 15:43:46 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=521584&amp;s=c"/>
+      <language>fa</language>
+    </item>
+  </channel>
+</rss>
