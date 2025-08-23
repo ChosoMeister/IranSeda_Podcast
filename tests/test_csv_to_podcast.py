@@ -67,6 +67,19 @@ def test_build_item_contains_translated_fields(mock_head):
 
 
 @patch("tools.csv_to_podcast.requests.head")
+def test_build_item_includes_summary(mock_head):
+    headers = {"Content-Type": "audio/mpeg", "Content-Length": "1"}
+    mock_head.return_value = _mock_response(headers)
+    row = {
+        "Book_Title": "T",
+        "Book_Summary": "SUM",
+        "FullBook_MP3_URL": "http://example.com/a.mp3",
+    }
+    item = build_item(row, "Wed, 01 Jan 2024 00:00:00 +0000")
+    assert "خلاصه کتاب: SUM" in item
+
+
+@patch("tools.csv_to_podcast.requests.head")
 def test_long_description_trims_optional_fields(mock_head):
     headers = {"Content-Type": "audio/mpeg", "Content-Length": "1"}
     mock_head.return_value = _mock_response(headers)

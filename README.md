@@ -15,27 +15,39 @@ pip install requests beautifulsoup4 pandas
 ## مراحل اجرا
 
 ### ۱. دریافت فهرست کتاب‌ها
-```bash
-RUN_NAME=demo START_PAGE=1 END_PAGE=3 python scrape_iranseda_env.py
-```
-متغیرها:
-- `RUN_NAME`: نام اجرا (پوشه‌ای با همین نام در `runs/` ساخته می‌شود).
-- `SOURCE_URL`: آدرس صفحه تگ ایران‌صدا با `{}` برای شماره صفحه.
-- `START_PAGE` و `END_PAGE`: محدوده صفحات.
-- `RUNS_DIR`: مسیر ریشه ذخیره خروجی‌ها (پیش‌فرض `runs`).
+دو روش برای تامین لینک کتاب‌ها وجود دارد:
 
-خروجی: `runs/<RUN_NAME>/raw/audiobooks_<RUN_NAME>.csv`
+1. **خزش وب** (روش قدیمی)
+   ```bash
+   RUN_NAME=demo START_PAGE=1 END_PAGE=3 python scrape_iranseda_env.py
+   ```
+   متغیرها:
+   - `RUN_NAME`: نام اجرا (پوشه‌ای با همین نام در `runs/` ساخته می‌شود).
+   - `SOURCE_URL`: آدرس صفحه تگ ایران‌صدا با `{}` برای شماره صفحه.
+   - `START_PAGE` و `END_PAGE`: محدوده صفحات.
+   - `RUNS_DIR`: مسیر ریشه ذخیره خروجی‌ها (پیش‌فرض `runs`).
+
+   خروجی: `runs/<RUN_NAME>/raw/audiobooks_<RUN_NAME>.csv`
+
+2. **گوگل‌شیت**
+   اگر لیست کتاب‌ها را در یک Google Sheet عمومی نگه‌داری کنید می‌توانید مرحلهٔ خزش را حذف کنید. صفحه باید حداقل ستونی با نام `URL` (و به‌صورت اختیاری `Summary`) داشته باشد. مثال اجرا:
+   ```bash
+   RUN_NAME=demo GOOGLE_SHEET_URL="https://docs.google.com/..." \
+   python script_iran_seda_final_STREAM_MERGE_v6_env.py
+   ```
+   اسکریپت لینک شیت را به CSV تبدیل کرده و با هر اجرا اگر لینک جدیدی اضافه شده باشد به انتهای فید پادکست افزوده می‌شود.
 
 ### ۲. استخراج جزئیات و لینک MP3
+اگر از روش اول استفاده کرده‌اید، اسکریپت مرحله دوم را اجرا کنید:
 ```bash
 RUN_NAME=demo python script_iran_seda_final_STREAM_MERGE_v6_env.py
 ```
 این مرحله:
-- برای هر سطر CSV مرحله قبل صفحه کتاب را باز می‌کند.
-- اطلاعاتی مانند عنوان، توضیحات، نویسنده، تصویر و MP3 را استخراج می‌کند.
+- برای هر لینک، صفحه کتاب را باز می‌کند.
+- اطلاعاتی مانند عنوان، توضیحات، خلاصه، نویسنده، تصویر و MP3 را استخراج می‌کند.
 - فایل ادغام‌شده را در `runs/<RUN_NAME>/merged/books_with_attid_<RUN_NAME>.csv` ذخیره می‌کند.
 - در صورت خطا، اطلاعات در `runs/<RUN_NAME>/errors/errors_<RUN_NAME>.csv` ثبت می‌شود.
-- با تعیین متغیر محیطی `INPUT_CSV` می‌توان مسیر CSV ورودی دلخواه را مشخص کرد.
+- با تعیین متغیرهای محیطی `INPUT_CSV` یا `GOOGLE_SHEET_URL` مسیر ورودی مشخص می‌شود.
 
 ### ۳. ساخت فید پادکست
 ```bash
@@ -47,12 +59,14 @@ python tools/csv_to_podcast.py --csv runs/demo/merged/books_with_attid_demo.csv 
   مقادیر پیش‌فرض نویسنده و خلاصه به‌ترتیب «Mustafa Tayefi» و «جمع آوری بخشی از کتاب های صوتی موجود در سایت ایران صدا  در جهت استفاده در نرم افزار پادگیر» هستند.
 خروجی: `public/feeds/<RUN_NAME>/podcast.xml`
 
-توضیحات هر آیتم در فید از اطلاعات موجود در CSV ساخته می‌شود و شامل عنوان، توضیحات، نویسنده، مترجم، ژانر، مدت‌زمان و سایر متادیتا است.
+توضیحات هر آیتم در فید از اطلاعات موجود در CSV ساخته می‌شود و شامل عنوان، خلاصه، توضیحات، نویسنده، مترجم، ژانر، مدت‌زمان و سایر متادیتا است.
 
 ### ۴. انتشار روی GitHub Pages
 1. مخزن را روی گیت‌هاب آپلود کنید (برنچ `main`).
 2. در **Settings → Pages**، حالت **Build and deployment: GitHub Actions** را انتخاب کنید.
-3. ورک‌فلو **Build & Deploy Podcast RSS (GitHub Pages)** را اجرا کرده و مقادیر لازم را وارد کنید.
+3. بسته به منبع لینک‌ها یکی از ورک‌فلوهای زیر را اجرا کنید:
+   - **Build & Deploy Podcast RSS (GitHub Pages)**: خزش صفحات سایت با ورودی‌های `source_url`، `start_page` و `end_page`.
+   - **Build & Deploy Podcast from Google Sheet (GitHub Pages)**: پردازش فهرست کتاب‌ها از Google Sheet عمومی با ورودی `gsheet_url`.
 4. پس از اجرا فید در مسیر زیر در دسترس است:
    ```
    https://<username>.github.io/<repo>/feeds/<RUN_NAME>/podcast.xml

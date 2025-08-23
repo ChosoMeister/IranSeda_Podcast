@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import os, sys, re, csv, time, random
+import os, sys, re, csv, time, random, io
 from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
@@ -9,6 +9,7 @@ import pandas as pd
 RUN_NAME = os.getenv("RUN_NAME", "latest")
 RUNS_DIR = os.getenv("RUNS_DIR", "runs")
 IN_CSV_ENV = os.getenv("INPUT_CSV", "")
+GSHEET_URL = os.getenv("GOOGLE_SHEET_URL", "").strip()
 
 RAW_DIR = Path(RUNS_DIR) / RUN_NAME / "raw"
 MERGED_DIR = Path(RUNS_DIR) / RUN_NAME / "merged"
@@ -21,12 +22,40 @@ OUT_CSV = str(MERGED_DIR / f"books_with_attid_{RUN_NAME}.csv")
 ERR_CSV = str(ERROR_DIR / f"errors_{RUN_NAME}.csv")
 
 CSV_FIELDS = [
-    "AudioBook_ID","Book_Title","Book_Description","Book_Detail","Book_Language","Book_Country",
+    "AudioBook_ID","Book_Title","Book_Description","Book_Detail","Book_Summary","Book_Language","Book_Country",
     "Book_Author","Book_Translator","Book_Narrator","Book_Director","Book_Producer",
     "Book_SoundEngineer","Book_Effector","Book_Actors","Book_Genre","Book_Category",
     "Book_Duration","Episode_Count","Cover_Image_URL","Player_Link",
     "FullBook_MP3_URL","All_MP3s_Found"
 ]
+
+def read_gsheet(url: str):
+    if not url:
+        return None
+    export = url
+    if "export?format=csv" not in url:
+        m = re.search(r"/d/([\w-]+)", url)
+        if not m:
+            raise ValueError("Invalid Google Sheet URL")
+        sheet_id = m.group(1)
+        gid_match = re.search(r"[?&]gid=(\d+)", url)
+        gid = gid_match.group(1) if gid_match else "0"
+        export = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv&gid={gid}"
+    r = requests.get(export, timeout=30)
+    r.raise_for_status()
+    content = r.content.decode("utf-8")
+    reader = csv.DictReader(io.StringIO(content))
+    rows = []
+    for row in reader:
+        u = row.get("URL") or row.get("url")
+        if not u:
+            continue
+        bid = None
+        m = re.search(r"[?&]g=(\d+)", u)
+        if m:
+            bid = m.group(1)
+        rows.append({"AudioBook_ID": bid, "URL": u, "Summary": row.get("Summary") or row.get("Book_Summary")})
+    return pd.DataFrame(rows)
 
 def abs_url(u: str) -> str:
     if u.startswith("http"): return u
@@ -157,12 +186,17 @@ def parse_page(html: str, url: str):
     }
 
 def main():
-    in_path = Path(INPUT_CSV)
-    if not in_path.exists():
-        print(f"ERROR: {INPUT_CSV} not found.")
-        sys.exit(1)
-
-    df_in = pd.read_csv(in_path, encoding="utf-8")
+    if GSHEET_URL:
+        df_in = read_gsheet(GSHEET_URL)
+        if df_in is None or df_in.empty:
+            print("ERROR: No data found in Google Sheet.")
+            sys.exit(1)
+    else:
+        in_path = Path(INPUT_CSV)
+        if not in_path.exists():
+            print(f"ERROR: {INPUT_CSV} not found.")
+            sys.exit(1)
+        df_in = pd.read_csv(in_path, encoding="utf-8")
     merged_rows = []
     error_rows = []
 
@@ -177,6 +211,7 @@ def main():
                 best, all_mp3 = get_mp3s_from_api(parsed["AudioBook_ID"], attid)
             parsed["FullBook_MP3_URL"] = best
             parsed["All_MP3s_Found"] = all_mp3
+            parsed["Book_Summary"] = row.get("Summary") or row.get("Book_Summary")
             merged_rows.append(parsed)
             print(f"[{idx+1}/{len(df_in)}] ✓ {parsed.get('AudioBook_ID')}")
         except Exception as e:

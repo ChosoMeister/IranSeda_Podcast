@@ -1,0 +1,87 @@
+name: Build & Deploy Podcast from Google Sheet (GitHub Pages)
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_name:
+        description: "نام اجرا (public/feeds/<run_name> و runs/<run_name>/...)"
+        required: true
+        type: string
+      gsheet_url:
+        description: "لینک عمومی Google Sheet"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      RUN_NAME: ${{ github.event.inputs.run_name || format('gsheet-{0}', github.run_id) }}
+      RUNS_DIR: runs
+      GOOGLE_SHEET_URL: ${{ github.event.inputs.gsheet_url }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4 pandas
+
+      - name: Merge & enrich from Google Sheet
+        run: |
+          python script_iran_seda_final_STREAM_MERGE_v6_env.py
+
+      - name: Generate RSS into public/feeds/<RUN_NAME>/podcast.xml
+        run: |
+          python tools/csv_to_podcast.py \
+            --csv "runs/${RUN_NAME}/merged/books_with_attid_${RUN_NAME}.csv" \
+            --out-dir public/feeds --run-name "${RUN_NAME}" \
+            --site "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}" \
+            --channel-title "کتاب‌های صوتی من" \
+            --channel-author "ناشر نامشخص"
+
+      - name: Update public/index.html with feed link
+        run: |
+          FEED_PATH="feeds/${RUN_NAME}/podcast.xml"
+          FEED_ITEM="<li><code>${FEED_PATH}</code> — <a href='/${FEED_PATH}'>مشاهده RSS</a></li>"
+          awk '1;/<!-- FEEDS:LIST -->/{print "    " ENVIRON["FEED_ITEM"]}' public/index.html > public/index.new.html
+          mv public/index.new.html public/index.html
+
+      - name: Commit generated outputs (feeds + runs) back to repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/feeds public/index.html runs
+          git commit -m "Add run ${RUN_NAME} (Google Sheet)" || echo "Nothing to commit"
+          git push
+
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
