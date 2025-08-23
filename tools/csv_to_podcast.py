@@ -93,7 +93,6 @@ def build_item(row, pubdate):
         ("Book_Category", "دسته‌بندی", False),
         ("Book_Duration", "مدت زمان", False),
         ("Episode_Count", "تعداد اپیزود (اگر چندقسمتی است)", True),
-        ("Cover_Image_URL", "آدرس تصویر کاور", True),
     ]
 
     # Collect available pieces of description
@@ -157,8 +156,8 @@ def main():
     ap.add_argument("--out-dir", default="public/feeds")
     ap.add_argument("--run-name", default=os.getenv("RUN_NAME","latest"))
     ap.add_argument("--site", required=True)
-    ap.add_argument("--channel-title", default="کتاب‌های صوتی من")
-    ap.add_argument("--channel-author", default="Mustafa Tayefi")
+    ap.add_argument("--channel-title", default="کتاب‌های صوتی گلچین شده در ایران صدا")
+    ap.add_argument("--channel-author", default="Mustafa")
     ap.add_argument("--channel-summary", default="جمع آوری بخشی از کتاب های صوتی موجود در سایت ایران صدا  در جهت استفاده در نرم افزار پادگیر")
     args = ap.parse_args()
 
