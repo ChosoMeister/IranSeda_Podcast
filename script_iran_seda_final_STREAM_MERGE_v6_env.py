@@ -55,6 +55,19 @@ def read_gsheet(url: str):
         if m:
             bid = m.group(1)
         rows.append({"AudioBook_ID": bid, "URL": u, "Summary": row.get("Summary") or row.get("Book_Summary")})
+    if not rows:
+        reader2 = csv.reader(io.StringIO(content))
+        for row in reader2:
+            if not row:
+                continue
+            u = row[0].strip()
+            if not u or u.lower() == "url":
+                continue
+            bid = None
+            m = re.search(r"[?&]g=(\d+)", u)
+            if m:
+                bid = m.group(1)
+            rows.append({"AudioBook_ID": bid, "URL": u, "Summary": None})
     return pd.DataFrame(rows)
 
 def abs_url(u: str) -> str:
