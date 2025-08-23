@@ -64,7 +64,9 @@ python tools/csv_to_podcast.py --csv runs/demo/merged/books_with_attid_demo.csv 
 ### ۴. انتشار روی GitHub Pages
 1. مخزن را روی گیت‌هاب آپلود کنید (برنچ `main`).
 2. در **Settings → Pages**، حالت **Build and deployment: GitHub Actions** را انتخاب کنید.
-3. ورک‌فلو **Build & Deploy Podcast RSS (GitHub Pages)** را اجرا کرده و مقادیر لازم را وارد کنید.
+3. بسته به منبع لینک‌ها یکی از ورک‌فلوهای زیر را اجرا کنید:
+   - **Build & Deploy Podcast RSS (GitHub Pages)**: خزش صفحات سایت با ورودی‌های `source_url`، `start_page` و `end_page`.
+   - **Build & Deploy Podcast from Google Sheet (GitHub Pages)**: پردازش فهرست کتاب‌ها از Google Sheet عمومی با ورودی `gsheet_url`.
 4. پس از اجرا فید در مسیر زیر در دسترس است:
    ```
    https://<username>.github.io/<repo>/feeds/<RUN_NAME>/podcast.xml
