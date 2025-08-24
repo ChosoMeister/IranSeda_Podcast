@@ -3,6 +3,7 @@ import argparse, csv, hashlib, os
 from datetime import datetime, timezone
 from xml.sax.saxutils import escape
 import requests
+from bs4 import BeautifulSoup
 
 # Maximum length allowed for the description field.  If the generated
 # description exceeds this value the script will gradually drop optional
@@ -35,6 +36,30 @@ def read_rows(path):
             continue
     raise RuntimeError("Cannot read CSV.")
 
+
+def fetch_book_detail(url: str) -> str:
+    """Fetch and extract the full book description from a page URL."""
+    try:
+        r = requests.get(url, timeout=30)
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, "html.parser")
+        # Prefer the full description if available
+        el = soup.find("div", class_=lambda c: c and "full" in c and "description" in c)
+        if el:
+            return el.get_text(strip=True)
+        # Fallback to the short description
+        el = soup.find("div", class_=lambda c: c and "short" in c and "description" in c)
+        if el:
+            return el.get_text(strip=True)
+        # Finally, try the meta description
+        meta = soup.find("meta", attrs={"name": "description"}) or soup.find(
+            "meta", attrs={"property": "og:description"}
+        )
+        if meta and meta.get("content"):
+            return meta["content"].strip()
+    except Exception:
+        pass
+    return ""
 
 def fetch_audio_length(url: str) -> int:
     """Return Content-Length of an MP3 after validating required headers.
@@ -70,6 +95,15 @@ def build_item(row, pubdate):
     category = safe_get(row, "Book_Category") or safe_get(row, "Book_Genre")
     lang = safe_get(row, "Book_Language") or "fa"
     country = safe_get(row, "Book_Country")
+
+    # Ensure a detailed description is available. If ``Book_Detail`` is empty,
+    # attempt to fetch it from the provided ``Player_Link`` URL.
+    if not safe_get(row, "Book_Detail"):
+        detail_url = safe_get(row, "Player_Link")
+        if detail_url:
+            fetched = fetch_book_detail(detail_url)
+            if fetched:
+                row["Book_Detail"] = fetched
 
     # Build a rich description from available metadata fields.  Each entry in
     # ``field_map`` is ``(csv_key, label, optional)`` where ``optional`` marks
