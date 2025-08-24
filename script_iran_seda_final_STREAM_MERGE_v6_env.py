@@ -84,47 +84,102 @@ def text_or_none(el):
     return el.get_text(strip=True) if el else None
 
 def parse_label_from_iteminfo(soup, label_fa):
-    for li in soup.select(".item-info li"):
-        span = li.find("span")
-        if span and label_fa in span.get_text(strip=True):
-            txt = li.get_text(" ", strip=True)
-            return txt.replace(label_fa, "").strip()
+    for dd in soup.select(".item-info dd.field"):
+        strong = dd.find("strong")
+        if strong and label_fa in strong.get_text(strip=True):
+            items = [t.get_text(" ", strip=True) for t in dd.find_all(["a", "span"])]
+            items = [t for t in items if t and t != label_fa]
+            return "، ".join(dict.fromkeys(items)) or None
     return None
+
 
 def parse_from_metadata_list(soup, dt_text):
-    for li in soup.select(".metadata-list li"):
-        dt = li.find("dt")
-        if dt and dt_text in dt.get_text(strip=True):
-            dd = li.find("dd")
-            return text_or_none(dd)
+    for dt in soup.select("#tags dt"):
+        if dt_text in dt.get_text(strip=True):
+            dd = dt.find_next_sibling("dd")
+            if dd:
+                vals = [sp.get_text(" ", strip=True) for sp in dd.select("span")]
+                vals = [v for v in vals if v and v != ","]
+                if vals:
+                    return "، ".join(dict.fromkeys(vals))
     return None
+
 
 def get_og_image(soup):
-    og = soup.find("meta", attrs={"property":"og:image"})
-    if og and og.get("content"): return og["content"]
+    tag = soup.find("meta", attrs={"property": "og:image"})
+    if tag and (tag.get("content") or tag.get("value")):
+        return tag.get("content") or tag.get("value")
     return None
 
+
 def find_first_image_src(soup):
-    img = soup.find("img", src=True)
-    return img["src"] if img else None
+    img = (
+        soup.select_one(".product-view .item .image img")
+        or soup.select_one(".cover img")
+        or soup.find("img")
+    )
+    if img and img.has_attr("src"):
+        return img["src"]
+    return None
+
 
 def extract_attid(soup):
     og = get_og_image(soup)
     if og:
         m = re.search(r"[?&]AttID=(\d+)", og, re.I)
-        if m: return int(m.group(1))
+        if m:
+            return int(m.group(1))
     for img in soup.find_all("img", src=True):
         m = re.search(r"[?&]AttID=(\d+)", img["src"], re.I)
-        if m: return int(m.group(1))
+        if m:
+            return int(m.group(1))
+    for a in soup.find_all("a", href=True):
+        m = re.search(r"[?&]attid=(\d+)", a["href"], re.I)
+        if m:
+            return int(m.group(1))
     return None
 
+
 def parse_duration_and_episodes(soup):
-    dur = parse_label_from_iteminfo(soup, "مدت زمان:")
-    eps = parse_label_from_iteminfo(soup, "تعداد قسمت:")
-    return dur, eps
+    dur = None
+    ep = None
+    dur_keys = ["مدت", "مدت زمان", "زمان"]
+    ep_keys = ["تعداد قسمت", "تعداد قطعه", "تعداد قطعات", "تعداد قسمت‌ها"]
+
+    for dd in soup.select(".item-info dd.field"):
+        s = dd.get_text(" ", strip=True)
+        for k in dur_keys:
+            if k in s and not dur:
+                m = re.search(r"(\d{1,2}:\d{2}:\d{2}|\d{1,3}:\d{2})", s)
+                if m:
+                    dur = m.group(1)
+        for k in ep_keys:
+            if k in s and not ep:
+                m = re.search(r"(\d+)", s)
+                if m:
+                    ep = int(m.group(1))
+
+    for dt in soup.select("#tags dt"):
+        t = dt.get_text(strip=True)
+        if any(k in t for k in dur_keys) and not dur:
+            dd = dt.find_next_sibling("dd")
+            if dd:
+                s = dd.get_text(" ", strip=True)
+                m = re.search(r"(\d{1,2}:\d{2}:\d{2}|\d{1,3}:\d{2})", s)
+                if m:
+                    dur = m.group(1)
+        if any(k in t for k in ep_keys) and not ep:
+            dd = dt.find_next_sibling("dd")
+            if dd:
+                m = re.search(r"(\d+)", dd.get_text(" ", strip=True))
+                if m:
+                    ep = int(m.group(1))
+
+    return dur, ep
+
 
 def build_player_link(audio_id, attid):
-    return f"https://book.iranseda.ir/Details?VALID=TRUE&g={audio_id}&b=&attid={attid}"
+    return f"https://player.iranseda.ir/book-player/?VALID=TRUE&g={audio_id}&attid={attid}"
 
 def get_mp3s_from_api(g, attid):
     try:
@@ -149,75 +204,80 @@ def get_mp3s_from_api(g, attid):
 
 def parse_page(html: str, url: str):
     soup = BeautifulSoup(html, "html.parser")
-    title = text_or_none(soup.find("h1"))
 
-    # Try multiple locations for the short description.  IranSeda has changed
-    # its markup a few times and the description might appear either in a div
-    # with various class names or as a meta tag.
-    desc_el = soup.find(
-        "div",
-        class_=lambda c: c and "short" in c and "description" in c,
-    )
-    desc = text_or_none(desc_el)
+    data = {}
+    data["Book_Title"] = text_or_none(soup.select_one("h1.titel")) or text_or_none(soup.find("h1"))
+
+    # Short description: prefer section content, fallback to meta tags
+    desc = text_or_none(soup.select_one("#about .body-module"))
     if not desc:
         meta = soup.find("meta", attrs={"name": "description"}) or soup.find(
             "meta", attrs={"property": "og:description"}
         )
         if meta and meta.get("content"):
-            desc = meta["content"].strip()
-    if not desc:
-        desc = ""
+            desc = meta.get("content").strip()
+    data["Book_Description"] = desc
 
-    detail_el = soup.find(
-        "div",
-        class_=lambda c: c and "full" in c and "description" in c,
+    # Full detail
+    detail = text_or_none(soup.select_one("#review .body-module .more")) or text_or_none(
+        soup.select_one("#review .body-module")
     )
-    detail = text_or_none(detail_el) or ""
-    lang = parse_from_metadata_list(soup, "زبان")
-    country = parse_from_metadata_list(soup, "کشور")
-    author = parse_from_metadata_list(soup, "نویسنده")
-    translator = parse_from_metadata_list(soup, "مترجم")
-    narrator = parse_from_metadata_list(soup, "گوینده")
-    director = parse_from_metadata_list(soup, "کارگردان")
-    producer = parse_from_metadata_list(soup, "تهیه‌کننده")
-    se = parse_from_metadata_list(soup, "مهندس صدا")
-    eff = parse_from_metadata_list(soup, "افکت‌گذار")
-    actors = parse_from_metadata_list(soup, "بازیگران")
-    genre = parse_from_metadata_list(soup, "ژانر")
-    category = parse_from_metadata_list(soup, "دسته‌بندی")
+    if not detail:
+        detail_el = soup.find(
+            "div",
+            class_=lambda c: c and "full" in c and "description" in c,
+        )
+        detail = text_or_none(detail_el)
+    data["Book_Detail"] = detail
 
-    attid = extract_attid(soup)
-    duration, episodes = parse_duration_and_episodes(soup)
+    lang_meta = soup.find("meta", {"property": "og:locale"})
+    data["Book_Language"] = "فارسی" if (lang_meta and "fa" in lang_meta.get("content", "")) else None
+    data["Book_Country"] = parse_from_metadata_list(soup, "کشور")
+
+    data["Book_Author"] = (
+        parse_label_from_iteminfo(soup, "نویسنده")
+        or parse_from_metadata_list(soup, "عنوان كتاب مرجع")
+        or parse_from_metadata_list(soup, "نویسنده")
+    )
+    data["Book_Translator"] = parse_from_metadata_list(soup, "ترجمه")
+    data["Book_Narrator"] = parse_from_metadata_list(soup, "راوی")
+    data["Book_Director"] = parse_label_from_iteminfo(soup, "کارگردان") or parse_from_metadata_list(
+        soup, "کارگردان"
+    )
+    data["Book_Producer"] = parse_from_metadata_list(soup, "تهیه‌کننده")
+    data["Book_SoundEngineer"] = parse_from_metadata_list(soup, "صدابردار")
+    data["Book_Effector"] = parse_from_metadata_list(soup, "افکتور") or parse_from_metadata_list(
+        soup, "افكتور"
+    )
+    data["Book_Actors"] = parse_from_metadata_list(soup, "بازیگران")
+    data["Book_Genre"] = parse_from_metadata_list(soup, "کلمه کلیدی") or parse_from_metadata_list(
+        soup, "نوع متن"
+    )
+    data["Book_Category"] = parse_from_metadata_list(soup, "دسته بندی ها") or parse_label_from_iteminfo(
+        soup, "دسته‌بندی"
+    )
+
+    dur_txt, ep_cnt = parse_duration_and_episodes(soup)
+    data["Book_Duration"] = dur_txt
+    data["Episode_Count"] = ep_cnt
+
     cover = get_og_image(soup) or find_first_image_src(soup)
     if cover:
         cover = abs_url(cover)
+    data["Cover_Image_URL"] = cover
 
-    q = parse_qs(urlparse(url).query)
-    g = q.get("g", [None])[0]
+    attid = extract_attid(soup)
+    try:
+        q = parse_qs(urlparse(url).query)
+        g = q.get("g", [None])[0]
+        data["AudioBook_ID"] = g
+    except Exception:
+        data["AudioBook_ID"] = None
 
-    return {
-        "AudioBook_ID": g,
-        "Book_Title": title,
-        "Book_Description": desc,
-        "Book_Detail": detail,
-        "Book_Language": lang,
-        "Book_Country": country,
-        "Book_Author": author,
-        "Book_Translator": translator,
-        "Book_Narrator": narrator,
-        "Book_Director": director,
-        "Book_Producer": producer,
-        "Book_SoundEngineer": se,
-        "Book_Effector": eff,
-        "Book_Actors": actors,
-        "Book_Genre": genre,
-        "Book_Category": category,
-        "Book_Duration": duration,
-        "Episode_Count": episodes,
-        "Cover_Image_URL": cover,
-        "Player_Link": build_player_link(g, attid) if g and attid else None,
-        "attid": attid,
-    }
+    data["Player_Link"] = build_player_link(data.get("AudioBook_ID"), attid) if data.get("AudioBook_ID") and attid else None
+    data["attid"] = attid
+
+    return data
 
 def main():
     if GSHEET_URL:
