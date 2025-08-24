@@ -3,6 +3,7 @@ import argparse, csv, hashlib, os
 from datetime import datetime, timezone
 from xml.sax.saxutils import escape
 import requests
+from bs4 import BeautifulSoup
 
 # Maximum length allowed for the description field.  If the generated
 # description exceeds this value the script will gradually drop optional
@@ -35,6 +36,30 @@ def read_rows(path):
             continue
     raise RuntimeError("Cannot read CSV.")
 
+
+def fetch_book_detail(url: str) -> str:
+    """Fetch and extract the full book description from a page URL."""
+    try:
+        r = requests.get(url, timeout=30)
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, "html.parser")
+        # Prefer the full description if available
+        el = soup.find("div", class_=lambda c: c and "full" in c and "description" in c)
+        if el:
+            return el.get_text(strip=True)
+        # Fallback to the short description
+        el = soup.find("div", class_=lambda c: c and "short" in c and "description" in c)
+        if el:
+            return el.get_text(strip=True)
+        # Finally, try the meta description
+        meta = soup.find("meta", attrs={"name": "description"}) or soup.find(
+            "meta", attrs={"property": "og:description"}
+        )
+        if meta and meta.get("content"):
+            return meta["content"].strip()
+    except Exception:
+        pass
+    return ""
 
 def fetch_audio_length(url: str) -> int:
     """Return Content-Length of an MP3 after validating required headers.
@@ -71,13 +96,22 @@ def build_item(row, pubdate):
     lang = safe_get(row, "Book_Language") or "fa"
     country = safe_get(row, "Book_Country")
 
+    # Ensure a detailed description is available. If ``Book_Detail`` is empty,
+    # attempt to fetch it from the provided ``Player_Link`` URL.
+    if not safe_get(row, "Book_Detail"):
+        detail_url = safe_get(row, "Player_Link")
+        if detail_url:
+            fetched = fetch_book_detail(detail_url)
+            if fetched:
+                row["Book_Detail"] = fetched
+
     # Build a rich description from available metadata fields.  Each entry in
     # ``field_map`` is ``(csv_key, label, optional)`` where ``optional`` marks
     # fields that may be removed if the description grows too long.
     field_map = [
         ("Book_Title", "عنوان کتاب", False),
-        ("Book_Description", "توضیحات کتاب", False),
-        ("Book_Detail", "جزئیات/متن کامل معرفی", False),
+        # Use the full detail text instead of the shorter description.
+        ("Book_Detail", "توضیحات کتاب", False),
         ("Book_Summary", "خلاصه کتاب", False),
         ("Book_Language", "زبان کتاب", True),
         ("Book_Country", "کشور (منشأ یا مخاطب)", True),
@@ -156,14 +190,15 @@ def main():
     ap.add_argument("--out-dir", default="public/feeds")
     ap.add_argument("--run-name", default=os.getenv("RUN_NAME","latest"))
     ap.add_argument("--site", required=True)
-    ap.add_argument("--channel-title", default="کتاب‌های صوتی گلچین شده در ایران صدا")
+    ap.add_argument("--channel-title", default="گلچین کتاب های گویای ایران صدا")
     ap.add_argument("--channel-author", default="Mustafa")
     ap.add_argument("--channel-summary", default="جمع آوری بخشی از کتاب های صوتی موجود در سایت ایران صدا  در جهت استفاده در نرم افزار پادگیر")
     args = ap.parse_args()
 
     rows = read_rows(args.csv)
     pubdate = now_rfc822()
-    cover = rows and safe_get(rows[0], "Cover_Image_URL") or ""
+    # Static podcast logo as requested.
+    cover = "http://book.iranseda.ir/css/radio-book/book-black.svg"
 
     items = []
     for r in rows:

@@ -22,3 +22,16 @@ def test_parse_page_uses_meta_description():
     """
     result = parse_page(html, "http://example.com")
     assert result["Book_Description"] == "meta description here"
+
+
+def test_parse_page_extracts_full_detail():
+    html = """
+    <html>
+      <body>
+        <h1>عنوانی</h1>
+        <div class='full description'>full detail text here</div>
+      </body>
+    </html>
+    """
+    result = parse_page(html, "http://example.com")
+    assert result["Book_Detail"] == "full detail text here"

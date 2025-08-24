@@ -14,6 +14,13 @@ def _mock_response(headers):
     return resp
 
 
+def _mock_get_response(text):
+    resp = MagicMock()
+    resp.text = text
+    resp.raise_for_status = lambda: None
+    return resp
+
+
 @patch("tools.csv_to_podcast.requests.head")
 def test_build_item_includes_content_length(mock_head):
     headers = {
@@ -56,14 +63,12 @@ def test_build_item_contains_translated_fields(mock_head):
     mock_head.return_value = _mock_response(headers)
     row = {
         "Book_Title": "عنوانی",
-        "Book_Description": "توضیحی",
         "Book_Detail": "جزئیاتی",
         "FullBook_MP3_URL": "http://example.com/a.mp3",
     }
     item = build_item(row, "Wed, 01 Jan 2024 00:00:00 +0000")
     assert "عنوان کتاب: عنوانی" in item
-    assert "توضیحات کتاب: توضیحی" in item
-    assert "جزئیات/متن کامل معرفی: جزئیاتی" in item
+    assert "توضیحات کتاب: جزئیاتی" in item
 
 
 @patch("tools.csv_to_podcast.requests.head")
@@ -88,8 +93,7 @@ def test_long_description_trims_optional_fields(mock_head):
     mod.MAX_DESC_LENGTH = 80
     row = {
         "Book_Title": "T",
-        "Book_Description": "D",
-        "Book_Detail": "DETAIL",
+        "Book_Detail": "DETAILDETAILDETAILDETAILDETAILDETAILDETAIL",
         "Book_Language": "FA",
         "Book_Country": "IR",
         "FullBook_MP3_URL": "http://example.com/a.mp3",
@@ -111,3 +115,18 @@ def test_invalid_content_type_is_skipped(mock_head, capsys):
     assert item is None
     out = capsys.readouterr().out
     assert "Invalid Content-Type" in out
+
+
+@patch("tools.csv_to_podcast.requests.get")
+@patch("tools.csv_to_podcast.requests.head")
+def test_fetches_book_detail_when_missing(mock_head, mock_get):
+    mock_head.return_value = _mock_response({"Content-Type": "audio/mpeg", "Content-Length": "1"})
+    html = "<html><div class='full description'>FULL DETAIL</div></html>"
+    mock_get.return_value = _mock_get_response(html)
+    row = {
+        "Book_Title": "T",
+        "FullBook_MP3_URL": "http://example.com/a.mp3",
+        "Player_Link": "http://example.com/detail",
+    }
+    item = build_item(row, "Wed, 01 Jan 2024 00:00:00 +0000")
+    assert "توضیحات کتاب: FULL DETAIL" in item
