@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>کتاب‌های صوتی من</title>
+    <link>https://ChosoMeister.github.io/IranSeda_Podcast</link>
+    <language>fa</language>
+    <lastBuildDate>Sun, 24 Aug 2025 13:46:27 +0000</lastBuildDate>
+    <itunes:author>ناشر نامشخص</itunes:author>
+    <itunes:summary>جمع آوری بخشی از کتاب های صوتی موجود در سایت ایران صدا  در جهت استفاده در نرم افزار پادگیر</itunes:summary>
+    <description><![CDATA[جمع آوری بخشی از کتاب های صوتی موجود در سایت ایران صدا  در جهت استفاده در نرم افزار پادگیر]]></description>
+    <itunes:image href="http://book.iranseda.ir/css/radio-book/book-black.svg"/>
+    <atom:link href="https://ChosoMeister.github.io/IranSeda_Podcast/feeds/IranSeda/podcast.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>بیست هزار فرسنگ زیر دریا</title>
+      <description><![CDATA[عنوان کتاب: بیست هزار فرسنگ زیر دریا]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=528988&amp;q=11" length="54201435" type="audio/mpeg"/>
+      <guid isPermaLink="false">ae26f89b611ff70512d8c507bb9621b3e51a54ff</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=521584&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>دیوار چین</title>
+      <description><![CDATA[عنوان کتاب: دیوار چین]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=378221&amp;q=11" length="40762981" type="audio/mpeg"/>
+      <guid isPermaLink="false">e7a6e927b62aa57e38c82fdc562a7a557a58371c</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=378658&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>رودخانه ی وارونه</title>
+      <description><![CDATA[عنوان کتاب: رودخانه ی وارونه]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=197470&amp;q=11" length="123646650" type="audio/mpeg"/>
+      <guid isPermaLink="false">9a200e6bcec3a4409bf92880c5ae1ab31cea8955</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=193911&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>شوالیه ای با زره زنگ زده</title>
+      <description><![CDATA[عنوان کتاب: شوالیه ای با زره زنگ زده]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=323559&amp;q=11" length="36469600" type="audio/mpeg"/>
+      <guid isPermaLink="false">fb0d4a7f3f7eddb7b9ce15fd6d7e4d1af3fbc8e0</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=322646&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>کتابخانه شبانه</title>
+      <description><![CDATA[عنوان کتاب: کتابخانه شبانه]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=372617&amp;q=11" length="99425035" type="audio/mpeg"/>
+      <guid isPermaLink="false">87723d4fa4fa76119016740819f8aebd562bd085</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=372890&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>آرزوهای بزرگ</title>
+      <description><![CDATA[عنوان کتاب: آرزوهای بزرگ]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=518719&amp;q=11" length="63307079" type="audio/mpeg"/>
+      <guid isPermaLink="false">1719507406c112a65c8b02281a3c6fdb987eb558</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=507141&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>جنایت و مکافات</title>
+      <description><![CDATA[عنوان کتاب: جنایت و مکافات]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=132198&amp;q=11" length="39316014" type="audio/mpeg"/>
+      <guid isPermaLink="false">c29395a430d8fe1acf4c26d88b3547396338d805</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=132531&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>مرد لندن</title>
+      <description><![CDATA[عنوان کتاب: مرد لندن]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=64624&amp;q=11" length="50532383" type="audio/mpeg"/>
+      <guid isPermaLink="false">051171b2236591dffae7b0c370c7a695459881fd</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=68961&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>سیانوژن درخشان</title>
+      <description><![CDATA[عنوان کتاب: سیانوژن درخشان]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=520810&amp;q=11" length="25695345" type="audio/mpeg"/>
+      <guid isPermaLink="false">1403547a5388eea89ff3262eb0f15ab4436710df</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=521972&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>آتش فشان طلا</title>
+      <description><![CDATA[عنوان کتاب: آتش فشان طلا]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=497955&amp;q=11" length="35459705" type="audio/mpeg"/>
+      <guid isPermaLink="false">b518e6f917d949e350d24e3843eb1198638ecc42</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=497557&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>مردی که دو بار مرد</title>
+      <description><![CDATA[عنوان کتاب: مردی که دو بار مرد]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=510574&amp;q=11" length="73680887" type="audio/mpeg"/>
+      <guid isPermaLink="false">bdca049629fbbb79b181495aa6cb36426e994c99</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=505531&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>خانه بچه ‏های خاصِ خانم پریگرین - جلد 1</title>
+      <description><![CDATA[عنوان کتاب: خانه بچه ‏های خاصِ خانم پریگرین - جلد 1]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=381619&amp;q=11" length="52193711" type="audio/mpeg"/>
+      <guid isPermaLink="false">6c298bb69406d76e491587a63f3bc3e31308fe2f</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=430429&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>خانه بچه ‏های خاصِ خانم پریگرین - جلد 3</title>
+      <description><![CDATA[عنوان کتاب: خانه بچه ‏های خاصِ خانم پریگرین - جلد 3]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=423977&amp;q=11" length="33338367" type="audio/mpeg"/>
+      <guid isPermaLink="false">8e54542861956a1a23f2115977c4b308b2e21f2d</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=424351&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>خانه بچه ‏های خاصِ خانم پریگرین - جلد 4</title>
+      <description><![CDATA[عنوان کتاب: خانه بچه ‏های خاصِ خانم پریگرین - جلد 4]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=425996&amp;q=11" length="40489829" type="audio/mpeg"/>
+      <guid isPermaLink="false">0c9b7d3a298b1312600f8598e411ae825250b551</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=424353&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>خانه بچه ‏های خاصِ خانم پریگرین - جلد 5</title>
+      <description><![CDATA[عنوان کتاب: خانه بچه ‏های خاصِ خانم پریگرین - جلد 5]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=428804&amp;q=11" length="48879209" type="audio/mpeg"/>
+      <guid isPermaLink="false">608a11aee7c1a5906a73051cf15d80b8ce623eac</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=428865&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>خانه بچه های خاص خانم پریگرین - جلد 6</title>
+      <description><![CDATA[عنوان کتاب: خانه بچه های خاص خانم پریگرین - جلد 6]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=436127&amp;q=11" length="45936527" type="audio/mpeg"/>
+      <guid isPermaLink="false">3e81741946b0f66aa525cda758b629357b789a38</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=433022&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>مرگ ایوان ایلیچ</title>
+      <description><![CDATA[عنوان کتاب: مرگ ایوان ایلیچ]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=186046&amp;q=11" length="40238886" type="audio/mpeg"/>
+      <guid isPermaLink="false">fb3174f41ee51b2661a00a1a41c31478e6d9fab1</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=184205&amp;s=c"/>
+      <language>fa</language>
+    </item>
+    <item>
+      <title>اشندن</title>
+      <description><![CDATA[عنوان کتاب: اشندن]]></description>
+      <enclosure url="https://player.iranseda.ir/downloadfile/?attid=415111&amp;q=11" length="75509183" type="audio/mpeg"/>
+      <guid isPermaLink="false">a920a3362c02d5aa4161f7495ef15ae399147f2b</guid>
+      <pubDate>Sun, 24 Aug 2025 13:46:27 +0000</pubDate>
+      <itunes:image href="http://player.iranseda.ir/picture?AttID=406512&amp;s=c"/>
+      <language>fa</language>
+    </item>
+  </channel>
+</rss>
