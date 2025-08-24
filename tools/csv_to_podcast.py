@@ -76,8 +76,8 @@ def build_item(row, pubdate):
     # fields that may be removed if the description grows too long.
     field_map = [
         ("Book_Title", "عنوان کتاب", False),
-        ("Book_Description", "توضیحات کتاب", False),
-        ("Book_Detail", "جزئیات/متن کامل معرفی", False),
+        # Use the full detail text instead of the shorter description.
+        ("Book_Detail", "توضیحات کتاب", False),
         ("Book_Summary", "خلاصه کتاب", False),
         ("Book_Language", "زبان کتاب", True),
         ("Book_Country", "کشور (منشأ یا مخاطب)", True),
@@ -156,14 +156,15 @@ def main():
     ap.add_argument("--out-dir", default="public/feeds")
     ap.add_argument("--run-name", default=os.getenv("RUN_NAME","latest"))
     ap.add_argument("--site", required=True)
-    ap.add_argument("--channel-title", default="کتاب‌های صوتی گلچین شده در ایران صدا")
+    ap.add_argument("--channel-title", default="گلچین کتاب های گویای ایران صدا")
     ap.add_argument("--channel-author", default="Mustafa")
     ap.add_argument("--channel-summary", default="جمع آوری بخشی از کتاب های صوتی موجود در سایت ایران صدا  در جهت استفاده در نرم افزار پادگیر")
     args = ap.parse_args()
 
     rows = read_rows(args.csv)
     pubdate = now_rfc822()
-    cover = rows and safe_get(rows[0], "Cover_Image_URL") or ""
+    # Static podcast logo as requested.
+    cover = "http://book.iranseda.ir/css/radio-book/book-black.svg"
 
     items = []
     for r in rows:
