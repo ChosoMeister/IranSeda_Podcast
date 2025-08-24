@@ -71,7 +71,7 @@ jobs:
             --out-dir public/feeds --run-name "${RUN_NAME}" \
             --site "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}" \
             --channel-title "کتاب‌های صوتی من" \
-            --channel-author "ناشر نامشخص"
+            --channel-author "Mustafa"
 
       - name: Update public/index.html with feed link
         run: |
