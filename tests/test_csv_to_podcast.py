@@ -130,3 +130,15 @@ def test_fetches_book_detail_when_missing(mock_head, mock_get):
     }
     item = build_item(row, "Wed, 01 Jan 2024 00:00:00 +0000")
     assert "توضیحات کتاب: FULL DETAIL" in item
+
+
+@patch("tools.csv_to_podcast.requests.head")
+def test_author_placeholder_replaced(mock_head):
+    mock_head.return_value = _mock_response({"Content-Type": "audio/mpeg", "Content-Length": "1"})
+    row = {
+        "Book_Title": "T",
+        "FullBook_MP3_URL": "http://example.com/a.mp3",
+        "Book_Producer": "ناشر نامشخص",
+    }
+    item = build_item(row, "Wed, 01 Jan 2024 00:00:00 +0000")
+    assert "<itunes:author>Mustafa</itunes:author>" in item

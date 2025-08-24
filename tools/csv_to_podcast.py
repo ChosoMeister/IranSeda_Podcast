@@ -92,6 +92,8 @@ def build_item(row, pubdate):
     image = safe_get(row, "Cover_Image_URL")
     duration = safe_get(row, "Book_Duration")
     author = safe_get(row, "Book_Producer") or safe_get(row, "Book_Author")
+    if author == "ناشر نامشخص":
+        author = "Mustafa"
     category = safe_get(row, "Book_Category") or safe_get(row, "Book_Genre")
     lang = safe_get(row, "Book_Language") or "fa"
     country = safe_get(row, "Book_Country")
